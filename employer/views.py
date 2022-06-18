@@ -1,10 +1,9 @@
 from django.shortcuts import render,redirect
 from django.urls import reverse_lazy
 from django.views.generic import View,ListView,CreateView,DetailView,UpdateView,DeleteView,TemplateView,FormView
-from employer.models import Jobs
+from employer.models import Jobs,CompanyProfile
 # Create your views here.
-from employer.forms import JobForm,LoginForm
-# LoginForm,PasswordResetForm,CompanyProfileForm
+from employer.forms import JobForm,LoginForm,CompanyProfileForm
 
 
 # user authentication import
@@ -98,11 +97,18 @@ class ListJobView(ListView):
     context_object_name="jobs"
     template_name="emp-listjob.html"
 
+    def get_queryset(self):
+        return Jobs.objects.filter(company=self.request.user)
+
 class AddJobView(CreateView):
     model = Jobs
     form_class = JobForm
     template_name = "emp-addjob.html"
     success_url = reverse_lazy("emp-alljobs")
+
+    def form_valid(self, form):
+        form.instance.company=self.request.user
+        return super().form_valid(form)
 
 class JobDetailView(DetailView):
     model = Jobs
@@ -187,32 +193,36 @@ class PasswordResetView(TemplateView):
             u.save()
             return redirect("signin")
 #
-# class CompanyProfileView(CreateView):
-#     model=CompanyProfile
-#     form_class = CompanyProfileForm
-#     template_name = "emp-addprofile.html"
-#     success_url = reverse_lazy("emp-home")
-#
-#     def form_valid(self, form):
-#         form.instance.user=self.request.user
-#         return super().form_valid(form)
-#
-#     def post(self, request, *args, **kwargs):
-#         form=CompanyProfileForm(request.POST,files=request.FILES)
-#         if form.is_valid():
-#             form.instance.user=request.user
-#             form.save()
-#             return redirect("emp-home")
-#         else:
-#             return render(request,self.template_name,{"form":form})
-#
-#
-# class EmpViewProfileView(TemplateView):
-#     template_name = "emp-viewprofile.html"
-#
-# class EmpProfileEditView(UpdateView):
-#     model = CompanyProfile
-#     form_class = CompanyProfileForm
-#     template_name = "emp-editprofile.html"
-#     success_url = reverse_lazy("emp-viewprofile.html")
+
+
+class CompanyProfileView(CreateView):
+    model=CompanyProfile
+    form_class = CompanyProfileForm
+    template_name = "emp-addprofile.html"
+    success_url = reverse_lazy("emp-home")
+
+    def form_valid(self, form):
+        form.instance.user=self.request.user
+        return super().form_valid(form)
+
+    # def post(self, request, *args, **kwargs):
+    #     form=CompanyProfileForm(request.POST,files=request.FILES)
+    #     if form.is_valid():
+    #         form.instance.user=request.user
+    #         form.save()
+    #         return redirect("emp-home")
+    #     else:
+    #         return render(request,self.template_name,{"form":form})
+
+
+
+class EmpViewProfileView(TemplateView):
+    template_name = "emp-viewprofile.html"
+
+class EmpProfileEditView(UpdateView):
+    model = CompanyProfile
+    form_class = CompanyProfileForm
+    template_name = "emp-editprofile.html"
+    success_url = reverse_lazy("emp-viewprofile")
+    pk_url_kwarg = "id"
 

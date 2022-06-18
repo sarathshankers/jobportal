@@ -13,9 +13,9 @@ urlpatterns = [
   path("users/account/signout",views.signout_view,name="signout"),
   path("user/password/change",views.ChangePasswordView.as_view(),name="changepassword"),
   path("users/password/reset",views.PasswordResetView.as_view(),name="password-reset"),
-# path("profile/add",views.CompanyProfileView.as_view(),name="emp-addprofile"),
-# path("profile/detail",views.EmpViewProfileView.as_view,name="emp-viewprofile"),
-# path("profile/edit/<int:id>",views.EmpProfileEditView.as_view,name="emp-editprofile"),
+  path("profile/add",views.CompanyProfileView.as_view(),name="emp-addprofile"),
+  path("profile/detail",views.EmpViewProfileView.as_view(),name="emp-viewprofile"),
+  path("profile/edit/<int:id>",views.EmpProfileEditView.as_view(),name="emp-editprofile"),
 
 
 ]

@@ -1,5 +1,5 @@
 from django import forms
-from employer.models import Jobs
+from employer.models import Jobs,CompanyProfile
 from django.contrib.auth.models import User
 # user creation form
 from django.contrib.auth.forms import UserCreationForm
@@ -20,7 +20,10 @@ class JobForm(forms.ModelForm):
     class Meta:
         model=Jobs
 
-        fields="__all__"
+        exclude=("company","created_date","active_status")
+        widgets={
+            "last_date":forms.DateInput(attrs={"class":"form-control","type":"date"})
+        }
 
 
 
@@ -50,7 +53,10 @@ class LoginForm(forms.Form):
 #             msg="password missmatch"
 #             self.add_error("password1",msg)
 #
-# class CompanyProfileForm(forms.ModelForm):
-#     class Meta:
-#         model=CompanyProfile
-#         exclude=("user",)
+
+
+
+class CompanyProfileForm(forms.ModelForm):
+    class Meta:
+        model=CompanyProfile
+        exclude=("user",)
